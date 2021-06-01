@@ -1,0 +1,13 @@
+[Unit]
+Description=rikmail
+
+[Service]
+Restart=always
+RestartSec=3600
+ExecStart=/usr/bin/rikmail
+StartLimitInterval=0
+Type=dbus
+BusName=xyz.openbmc_project.rikmail
+
+[Install]
+WantedBy=basic.target
