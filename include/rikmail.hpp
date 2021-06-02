@@ -20,7 +20,7 @@
 #include <sdbusplus/asio/object_server.hpp>
 
 static constexpr const char* RikmailServiceName =
-    "xyz.openbmc_project.rikmail";
+    "xyz.openbmc_project.Rikmail";
 static constexpr const char* RikmailIface =
     "xyz.openbmc_project.Rikmail";
 static constexpr const char* RikmailPath =

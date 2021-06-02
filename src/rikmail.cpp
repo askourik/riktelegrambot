@@ -61,7 +61,7 @@ static std::vector<std::string> executeCmd(const char* path,
     return stdOutput;
 }
 
-RikfanMgr::RikmailMgr(boost::asio::io_service& io_,
+RikmailMgr::RikmailMgr(boost::asio::io_service& io_,
                      sdbusplus::asio::object_server& srv_,
                      std::shared_ptr<sdbusplus::asio::connection>& conn_) :
     io(io_),
@@ -86,7 +86,7 @@ RikfanMgr::RikmailMgr(boost::asio::io_service& io_,
     iface->initialize(true);
 
     this->mode = readConf();
-    setFanMode(std::to_string(this->mode));
+    setMailMode(std::to_string(this->mode));
 }
 
 std::unordered_map<std::string, std::string> RikmailMgr::readAllVariable()
@@ -125,7 +125,7 @@ void RikmailMgr::setMailMode(const std::string& mode)
          // std::cout << e.what();
         this->mode = 2;
     }
-    setMailMode(this->mode);
+    sendPriority(this->mode);
     writeConf(this->mode);
     // executeCmd("/sbin/rikmail_setmode", mode.c_str());
     return;
@@ -150,7 +150,7 @@ int RikmailMgr::readConf()
 }
 
 
-void RikfanMgr::writeConf(int mode)
+void RikmailMgr::writeConf(int mode)
 {
     fs::path conf_fname = "/etc/rikmail/rikmail.conf";
     std::ofstream conf_stream {conf_fname};
