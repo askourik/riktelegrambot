@@ -1,0 +1,7 @@
+From: "UserX" <a.skurihin@rikor.com>
+To: "UserY" <skourikhin@gmail.com>
+Subject: This is a test
+
+Hi UserY,
+This is a test.
+Bye!

@@ -113,7 +113,7 @@ std::unordered_map<std::string, std::string> RikmailMgr::readAllVariable()
 
 void RikmailMgr::setMailMode(const std::string& mode)
 {
-    phosphor::logging::log<phosphor::logging::level::ERR>(
+    phosphor::logging::log<phosphor::logging::level::INFO>(
         ("Rikmail set mode " + mode).c_str());
 
     try 
@@ -125,35 +125,35 @@ void RikmailMgr::setMailMode(const std::string& mode)
          // std::cout << e.what();
         this->mode = 2;
     }
-    sendPriority(this->mode);
+    sendMail(this->mode);
     writeConf(this->mode);
-    // executeCmd("/sbin/rikmail_setmode", mode.c_str());
+    executeCmd("/usr/sbin/mail.sh", mode.c_str());
     return;
 }
 
 
 int RikmailMgr::readConf()
 {
-    int mode = 2;
+    int m = 2;
     fs::path conf_fname = "/etc/rikmail/rikmail.conf";
     try
     {
         std::ifstream conf_stream {conf_fname};
-        conf_stream >> mode;
+        conf_stream >> m;
     }
     catch (const std::exception& e)
     {
-        mode = 2;
-        writeConf(mode);
+        m = 2;
+        writeConf(m);
     }
-    return mode;
+    return m;
 }
 
 
-void RikmailMgr::writeConf(int mode)
+void RikmailMgr::writeConf(int m)
 {
     fs::path conf_fname = "/etc/rikmail/rikmail.conf";
     std::ofstream conf_stream {conf_fname};
-    conf_stream << mode;
+    conf_stream << m;
 }
 

@@ -20,7 +20,7 @@
 #include <sdbusplus/asio/object_server.hpp>
 
 static constexpr const char* RikmailServiceName =
-    "xyz.openbmc_project.Rikmail";
+    "xyz.openbmc_project.rikmail";
 static constexpr const char* RikmailIface =
     "xyz.openbmc_project.Rikmail";
 static constexpr const char* RikmailPath =
@@ -42,8 +42,8 @@ class RikmailMgr
     std::shared_ptr<sdbusplus::asio::dbus_interface> iface;
 
     int mode = 2;
-    int period = 60;
-    std::string recipient = "info@example.com";
+    //int period = 60;
+    //std::string recipient = "info@example.com";
 
     std::unordered_map<std::string, std::string> readAllVariable();
     void setMailMode(const std::string& mode);

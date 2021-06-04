@@ -56,4 +56,9 @@ set(SERVICE_FILES
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.conf DESTINATION /etc/rikmail COMPONENT config)
+install(FILES ${PROJECT_SOURCE_DIR}/mail.txt DESTINATION /etc/rikmail)
+install(FILES ${PROJECT_SOURCE_DIR}/mail1.txt DESTINATION /etc/rikmail)
+install(FILES ${PROJECT_SOURCE_DIR}/mail2.txt DESTINATION /etc/rikmail)
+install(FILES ${PROJECT_SOURCE_DIR}/mail3.txt DESTINATION /etc/rikmail)
+install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail.sh DESTINATION /usr/sbin)
 

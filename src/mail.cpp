@@ -28,36 +28,75 @@ using namespace std::chrono_literals;
 
 
 #define CONFIG_FILE_NAME "/usr/local/mail.conf"
-#define custMailMode   (0)
-#define minMailMode   (1)
-#define nomMailMode   (2)
-#define maxMailMode   (3)
-#define MailFileFmt  "/usr/local/mailv"
+#define minMail   (1)
+#define nomMail   (2)
+#define maxMail   (3)
 
 
-struct MailDescr
+struct MAILDescr
 {
-    std::string from;
-    std::string to;
-    int period;
+    std::string toname;
+    std::string mailname;
+    int mode;
     int priority;
+
+
 };
 
-const std::vector<MailDescr> mailDescr
+const std::vector<MAILDescr> mailDescr
 {
-    {"aa@bb.cc", "aa@bb.cc", 2, 3}
+    {"User 1", "skourikhin@gmail.com", 1, 1},
+    {"User 2", "skourikhin@gmail.com", 2, 2},
+    {"User 3", "skourikhin@gmail.com", 3, 3},
+
 };
 
+#define MailFmt  "/usr/sbin/sendmail -t < /etc/rikmail/mail.txt"
+#define MailsFmt  "/usr/sbin/sendmail -t < /etc/rikmail/mail%d.txt"
 
- int mailmode_values[] = { 0, 1, 2, 3 };
 
-
+const int mailmode_values[] = {minMail, minMail, nomMail, maxMail};
 
 /**
  * Для конфигурации одной для всех
  */
-void sendPriority(unsigned int mailmode)
+void sendMail(unsigned int mailmode)
 {
-   // executeCmd("/sbin/sendmail", mailmode.c_str());
-}
+    char cstr[256];
+    std::fstream fd;
 
+    if(mailmode >= (sizeof(mailmode_values) / sizeof(mailmode_values[0])))
+    {
+        syslog(LOG_ERR, "Wrong mailmode %d", mailmode);
+        mailmode = (sizeof(mailmode_values) / sizeof(mailmode_values[0])) - 1;
+    }
+
+    auto readVal = mailmode_values[mailmode];
+    
+    // Изменение задания в ручном режиме
+    for (const auto &it : mailDescr)
+    {
+        //ExecuteCmd(MailsFmt);
+        std::sprintf(cstr, MailsFmt, it.mode);
+        syslog(LOG_INFO, "Processing file %s mode %d",  cstr, mailmode);
+
+        ////std::sprintf(cstr, MailsFmt, it.mode);
+        ////fd.open(cstr, std::ios::out);
+
+        // Установить значения ШИМ
+        ////if (fd.is_open())
+        ////{
+        ////    fd << readVal;
+        ////    if (!fd.good())
+        ////    {
+        ////        syslog(LOG_ERR, "Error %d write to file <%s>", errno, cstr);
+        ////    }
+        ////    fd.close();
+        ////}
+        ////else
+        ////{
+        ////    syslog(LOG_ERR, "Error %d open file <%s>", errno, cstr);
+        ////}
+    }
+
+}
