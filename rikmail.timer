@@ -4,7 +4,7 @@ Requires=rikmail.service
 
 [Timer]
 Unit=rikmail.service
-OnCalendar=*:0/10
+OnCalendar=daily
 
 [Install]
 WantedBy=timers.target
