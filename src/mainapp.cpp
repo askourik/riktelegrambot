@@ -24,6 +24,7 @@ int main()
     conn->request_name(RikmailServiceName);
     sdbusplus::asio::object_server server(conn);
 
+
     RikmailMgr rikmailMgr(io, server, conn);
 
     io.run();

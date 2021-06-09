@@ -1,0 +1,10 @@
+[Unit]
+Description=Logs system statistics to the systemd journal
+Wants=rikmail.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/mail.sh
+
+[Install]
+WantedBy=multi-user.target

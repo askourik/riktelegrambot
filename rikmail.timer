@@ -1,0 +1,10 @@
+[Unit]
+Description=Logs some system statistics to the systemd journal
+Requires=rikmail.service
+
+[Timer]
+Unit=rikmail.service
+OnCalendar=*:0/10
+
+[Install]
+WantedBy=timers.target

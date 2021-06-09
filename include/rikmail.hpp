@@ -41,14 +41,13 @@ class RikmailMgr
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::shared_ptr<sdbusplus::asio::dbus_interface> iface;
 
-    int mode = 2;
-    //int period = 60;
-    //std::string recipient = "info@example.com";
+    std::string mode = "2_2_info@example.com";
 
     std::unordered_map<std::string, std::string> readAllVariable();
     void setMailMode(const std::string& mode);
-    int readConf();
-    void writeConf(int m);
+    std::string readConf();
+    void writeConf(const std::string &m);
+    //void rikmail_set_timer(const std::string &time_str);
 
   public:
     RikmailMgr(boost::asio::io_service& io,
