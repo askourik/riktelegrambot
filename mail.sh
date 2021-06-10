@@ -6,45 +6,47 @@ mode=${arr[0]}
 period=${arr[1]}
 recipient=${arr[2]}
 
-# oncal="*:0/2"
+oncal="daily"
+period1="daily"
+mode1="all"
 
-# if [ $period -eq 1 ]; then
-# oncal="*:0/2"
-# elif [ $period -eq 2 ]; then
-# oncal="daily"
-# fi
+if [ $period -eq 1 ]; then
+oncal="*:0/5"
+period1="5 minutes"
+elif [ $period -eq 2 ]; then
+oncal="daily"
+period1="daily"
+else
+oncal="daily"
+period1="daily"
+fi
 
-# unit1="[Unit]"
-# unit2="Description=Logs some system statistics to the systemd journal"
-# unit3="Requires=rikmail.service"
-# timer1="[Timer]"
-# timer2="Unit=rikmail.service"
-# timer3="OnCalendar=$oncal"
-# install1="[Install]"
-# install2="WantedBy=timers.target"
+if [ $mode -eq 1 ]; then
+mode1="errors"
+elif [ $mode -eq 2 ]; then
+mode1="warnings"
+elif [ $mode -eq 3 ]; then
+mode1="all"
+else
+mode1="all"
+fi
 
-# echo $unit1 > /etc/rikmail/rikmail.timer
-# echo $unit2 >> /etc/rikmail/rikmail.timer
-# echo $unit3 >> /etc/rikmail/rikmail.timer
-# echo >> /etc/rikmail/rikmail.timer
-# echo $timer1 >> /etc/rikmail/rikmail.timer
-# echo $timer2 >> /etc/rikmail/rikmail.timer
-# echo $timer3 >> /etc/rikmail/rikmail.timer
-# echo >> /etc/rikmail/rikmail.timer
-# echo $install1 >> /etc/rikmail/rikmail.timer
-# echo $install2 >> /etc/rikmail/rikmail.timer
+dateparam=$(date)
 
-# sleep 3
-
-# cp /etc/rikmail/rikmail.timer /etc/systemd/system/rikmail.timer
-
-# sleep 3
+unit1="[Unit]"
+unit2="Description=Logs some system statistics to the systemd journal"
+unit3="Requires=rikmail.service"
+timer1="[Timer]"
+timer2="Unit=rikmail.service"
+timer3="OnCalendar=$oncal"
+install1="[Install]"
+install2="WantedBy=timers.target"
 
 from="From: \"Rikor-Scalable EATX Board\" <Rikor-Scalable@rikor.com>"
 to="To: \"Administrator\" <$recipient>"
-subj="Subject: This is a test"
+subj="Subject: EATX Board Parameters at $dateparam"
 body1="Hi $recipient,"
-body2="This is a test. Mode: $mode. Period: $period"
+body2="Mode: $mode1. Period: $period1"
 body3="Bye!"
 HOSTSTATE=$(busctl --no-pager call xyz.openbmc_project.State.Host /xyz/openbmc_project/state/host0 org.freedesktop.DBus.Properties Get ss xyz.openbmc_project.State.Host CurrentHostState | cut -c47-)
 P105_PCH_AUX=$(busctl --system introspect xyz.openbmc_project.ADCSensor /xyz/openbmc_project/sensors/voltage/P105_PCH_AUX xyz.openbmc_project.Sensor.Value | grep writable | cut -c54-66)
@@ -81,13 +83,15 @@ echo "PVDQ_DEF_CPU1 = $PVDQ_DEF_CPU1" >> /etc/rikmail/mail.txt
 echo "PVDQ_DEF_CPU2 = $PVDQ_DEF_CPU2" >> /etc/rikmail/mail.txt
 echo "PVNN_PCH_AUX = $PVNN_PCH_AUX" >> /etc/rikmail/mail.txt
 echo $body2  >> /etc/rikmail/mail.txt
-#echo $body3  >> /etc/rikmail/mail.txt
+echo $body3  >> /etc/rikmail/mail.txt
 echo >> /etc/rikmail/mail.txt
 
 
 if [ $recipient != "info@example.com" ]; then
 sleep 5
 /usr/sbin/postfix start
+sleep 10
+/usr/sbin/sendmail -t < /etc/rikmail/mail.txt
 sleep 10
 /usr/sbin/sendmail -t < /etc/rikmail/mail.txt
 sleep 10
