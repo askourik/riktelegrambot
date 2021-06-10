@@ -6,39 +6,39 @@ mode=${arr[0]}
 period=${arr[1]}
 recipient=${arr[2]}
 
-oncal="*:0/2"
+# oncal="*:0/2"
 
-if [ $period -eq 1 ]; then
-oncal="*:0/2"
-elif [ $period -eq 2 ]; then
-oncal="daily"
-fi
+# if [ $period -eq 1 ]; then
+# oncal="*:0/2"
+# elif [ $period -eq 2 ]; then
+# oncal="daily"
+# fi
 
-unit1="[Unit]"
-unit2="Description=Logs some system statistics to the systemd journal"
-unit3="Requires=rikmail.service"
-timer1="[Timer]"
-timer2="Unit=rikmail.service"
-timer3="OnCalendar=$oncal"
-install1="[Install]"
-install2="WantedBy=timers.target"
+# unit1="[Unit]"
+# unit2="Description=Logs some system statistics to the systemd journal"
+# unit3="Requires=rikmail.service"
+# timer1="[Timer]"
+# timer2="Unit=rikmail.service"
+# timer3="OnCalendar=$oncal"
+# install1="[Install]"
+# install2="WantedBy=timers.target"
 
-echo $unit1 > /etc/rikmail/rikmail.timer
-echo $unit2 >> /etc/rikmail/rikmail.timer
-echo $unit3 >> /etc/rikmail/rikmail.timer
-echo >> /etc/rikmail/rikmail.timer
-echo $timer1 >> /etc/rikmail/rikmail.timer
-echo $timer2 >> /etc/rikmail/rikmail.timer
-echo $timer3 >> /etc/rikmail/rikmail.timer
-echo >> /etc/rikmail/rikmail.timer
-echo $install1 >> /etc/rikmail/rikmail.timer
-echo $install2 >> /etc/rikmail/rikmail.timer
+# echo $unit1 > /etc/rikmail/rikmail.timer
+# echo $unit2 >> /etc/rikmail/rikmail.timer
+# echo $unit3 >> /etc/rikmail/rikmail.timer
+# echo >> /etc/rikmail/rikmail.timer
+# echo $timer1 >> /etc/rikmail/rikmail.timer
+# echo $timer2 >> /etc/rikmail/rikmail.timer
+# echo $timer3 >> /etc/rikmail/rikmail.timer
+# echo >> /etc/rikmail/rikmail.timer
+# echo $install1 >> /etc/rikmail/rikmail.timer
+# echo $install2 >> /etc/rikmail/rikmail.timer
 
-sleep 3
+# sleep 3
 
-cp /etc/rikmail/rikmail.timer /etc/systemd/system/rikmail.timer
+# cp /etc/rikmail/rikmail.timer /etc/systemd/system/rikmail.timer
 
-sleep 3
+# sleep 3
 
 from="From: \"Rikor-Scalable EATX Board\" <Rikor-Scalable@rikor.com>"
 to="To: \"Administrator\" <$recipient>"
@@ -95,4 +95,5 @@ sleep 10
 sleep 10
 fi
 
+logger "mail.sh complete"
 

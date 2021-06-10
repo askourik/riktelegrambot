@@ -21,3 +21,14 @@ echo "OnCalendar=$oncal" >> /etc/rikmail/rikmail.timer
 echo >> /etc/rikmail/rikmail.timer
 echo "[Install]" >> /etc/rikmail/rikmail.timer
 echo "WantedBy=timers.target" >> /etc/rikmail/rikmail.timer
+
+sleep 3
+
+cp /etc/rikmail/rikmail.timer /etc/systemd/system/rikmail.timer
+
+sleep 3
+
+systemctl daemon-reload
+systemctl restart rikmail.timer
+
+logger "uptime.sh complete"

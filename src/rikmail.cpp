@@ -182,19 +182,18 @@ void RikmailMgr::writeConf(const std::string &m)
 {
     syslog(LOG_DEBUG, "rikmail write conf %s size = %d", m.c_str(), m.size());
     fs::path conf_fname = "/etc/rikmail/rikmail.conf";
-    std::ofstream conf_stream {conf_fname};
-    //if (m.size() > 3)
-    //{
+    {
+        std::ofstream conf_stream {conf_fname};
         conf_stream << m;
-    //}
+    }
     int ret_code = 0;
-    //executeCmd("/usr/sbin/uptimer.sh");
+    ret_code += system("/usr/sbin/uptimer.sh");
     phosphor::logging::log<phosphor::logging::level::INFO>(
         ("Rikmail executed uptimer.sh " + m).c_str());
-    ret_code += system("systemctl daemon-reload");
-    ret_code += system("systemctl restart rikmail.service");
-    if(ret_code)
-        throw std::runtime_error("Errors occurred while setting timer");
+    // ret_code += system("systemctl daemon-reload");
+    // ret_code += system("systemctl restart rikmail.service");
+    // if(ret_code)
+    //     throw std::runtime_error("Errors occurred while setting timer");
 }
 
 //void RikmailMgr::rikmail_set_timer(const std::string &time_str)
