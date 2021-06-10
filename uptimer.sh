@@ -3,10 +3,10 @@ arr=(${params//;/ })
 mode=${arr[0]}
 period=${arr[1]}
 recipient=${arr[2]}
-oncal="*:0/2"
+oncal="*:0/5"
 
 if [ $period -eq 1 ]; then
-oncal="*:0/2"
+oncal="*:0/5"
 elif [ $period -eq 2 ]; then
 oncal="daily"
 fi

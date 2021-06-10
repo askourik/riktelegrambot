@@ -3,7 +3,7 @@ Description=rikmail
 
 [Service]
 Restart=always
-RestartSec=3600
+RestartSec=86400
 ExecStart=/usr/bin/rikmail
 StartLimitInterval=0
 Type=dbus
