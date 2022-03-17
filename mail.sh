@@ -110,11 +110,30 @@ return $res
 
 #--------------------------main-------------------
 
+
+
+
 params=$(tr '_' ';|' < /etc/rikmail/rikmail.conf) 
 arr=(${params//;/ })
+if [ -n "$1" ]
+then
+mode=$1
+else
 mode=${arr[0]}
+fi
+if [ -n "$2" ]
+then
+period=$2
+else
 period=${arr[1]}
+fi
+if [ -n "$3" ]
+then
+recipient=$3
+echo "$mode_$period_$recipient" > /etc/rikmail/rikmail.conf
+else
 recipient=${arr[2]}
+fi
 dateparam=$(date)
 
 modemes="!"
