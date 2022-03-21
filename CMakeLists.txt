@@ -50,16 +50,17 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} phosphor_logging)
 
 set(SERVICE_FILES
-    ${PROJECT_SOURCE_DIR}/xyz.openbmc_project.rikmail.service
+    ${PROJECT_SOURCE_DIR}/rikmailsmtp.service
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
+#install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.conf DESTINATION /etc/rikmail COMPONENT config)
 #install(FILES ${PROJECT_SOURCE_DIR}/mail1.txt DESTINATION /etc/rikmail)
 #install(FILES ${PROJECT_SOURCE_DIR}/mail2.txt DESTINATION /etc/rikmail)
 #install(FILES ${PROJECT_SOURCE_DIR}/mail3.txt DESTINATION /etc/rikmail)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.service DESTINATION /etc/systemd/system)
+#install(FILES ${PROJECT_SOURCE_DIR}/rikmailsmtp.service DESTINATION /etc/systemd/system)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.timer DESTINATION /etc/systemd/system)
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail.sh DESTINATION /usr/sbin)
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail2.sh DESTINATION /usr/sbin)
