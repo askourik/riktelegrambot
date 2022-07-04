@@ -15,7 +15,7 @@ add_definitions(-DBOOST_NO_RTTI)
 add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_ASIO_DISABLE_THREADS)
 
-set(SRC_FILES src/mainapp.cpp src/rikmail.cpp src/mail.cpp)
+set(SRC_FILES src/mainapp.cpp src/rikmail.cpp)
 
 # import sdbusplus
 find_package(PkgConfig REQUIRED)
@@ -36,33 +36,23 @@ pkg_check_modules(LOGGING phosphor-logging REQUIRED)
 include_directories(${LOGGING_INCLUDE_DIRS})
 link_directories(${LOGGING_LIBRARY_DIRS})
 
-# import postfix
-#find_package(PkgConfig REQUIRED)
-#pkg_check_modules(POSTFIX postfix REQUIRED)
-#include_directories(${POSTFIX_INCLUDE_DIRS})
-#link_directories(${POSTFIX_LIBRARY_DIRS})
-
 add_executable(${PROJECT_NAME} ${SRC_FILES})
-#target_link_libraries(${PROJECT_NAME} ${POSTFIX_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${SDBUSPLUSPLUS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${DBUSINTERFACE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} phosphor_logging)
 
-set(SERVICE_FILES
-    ${PROJECT_SOURCE_DIR}/rikmailsmtp.service
-    )
+#set(SERVICE_FILES
+#    ${PROJECT_SOURCE_DIR}/rikmailsmtp.service
+#    )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-#install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
-install(FILES ${PROJECT_SOURCE_DIR}/rikmail.conf DESTINATION /etc/rikmail COMPONENT config)
-#install(FILES ${PROJECT_SOURCE_DIR}/mail1.txt DESTINATION /etc/rikmail)
-#install(FILES ${PROJECT_SOURCE_DIR}/mail2.txt DESTINATION /etc/rikmail)
-#install(FILES ${PROJECT_SOURCE_DIR}/mail3.txt DESTINATION /etc/rikmail)
+#install(FILES ${PROJECT_SOURCE_DIR}/rikmail.conf DESTINATION /etc/rikmail COMPONENT config)
+install(FILES ${PROJECT_SOURCE_DIR}/mailnew.conf DESTINATION /etc/rikmail COMPONENT config)
+install(FILES ${PROJECT_SOURCE_DIR}/mailnew.count DESTINATION /etc/rikmail COMPONENT config)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.service DESTINATION /etc/systemd/system)
-#install(FILES ${PROJECT_SOURCE_DIR}/rikmailsmtp.service DESTINATION /etc/systemd/system)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.timer DESTINATION /etc/systemd/system)
-install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail.sh DESTINATION /usr/sbin)
-install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail2.sh DESTINATION /usr/sbin)
+#install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail.sh DESTINATION /usr/sbin)
+install(PROGRAMS ${PROJECT_SOURCE_DIR}/mailnew.sh DESTINATION /usr/sbin)
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/uptimer.sh DESTINATION /usr/sbin)
 

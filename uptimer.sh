@@ -1,15 +1,33 @@
-params=$(tr '_' ';|' < /etc/rikmail/rikmail.conf) 
-arr=(${params//;/ })
-mode=${arr[0]}
-period=${arr[1]}
-recipient=${arr[2]}
+#!/bin/bash
+
+source /etc/rikmail/mailnew.conf
+
+correct=yes
+divider=0
+if [ $days == "0" ] && [ $hours == "0" ] && [ $minutes != "0" ]; then
+  divider=$minutes/5
+elif [ $days == "0" ] && [ $hours != "0" ] && [ $minutes == "0" ]; then
+  divider=$hours*12
+elif [ $days != "0" ] && [ $hours == "0" ] && [ $minutes == "0" ]; then
+  divider=$days*288
+else
+correct=no
+logger "incorrect timer format"
+fi
 oncal="*:0/5"
 
-if [ $period -eq 1 ]; then
-oncal="*:0/5"
-elif [ $period -eq 2 ]; then
-oncal="daily"
-fi
+echo "root=localhost" > /etc/ssmtp/ssmtp.conf
+echo "mailhub=$smtp:$port" >> /etc/ssmtp/ssmtp.conf
+echo "FromLineOverride=YES" >> /etc/ssmtp/ssmtp.conf
+echo "AuthUser=$inmail" >> /etc/ssmtp/ssmtp.conf
+echo "AuthPass=$inpass" >> /etc/ssmtp/ssmtp.conf
+echo "UseTLS=YES" >> /etc/ssmtp/ssmtp.conf
+
+
+counter=0
+previnstant=no
+echo "counter=$counter" > /etc/rikmail/mailnew.count
+echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
 
 echo "[Unit]" > /etc/rikmail/rikmail.timer
 echo "Description=Logs some system statistics to the systemd journal" >> /etc/rikmail/rikmail.timer
@@ -31,4 +49,4 @@ sleep 3
 systemctl daemon-reload
 systemctl restart rikmail.timer
 
-logger "uptime.sh complete"
+logger "uptimer.sh complete"

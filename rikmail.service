@@ -4,7 +4,7 @@ Wants=rikmail.timer
 
 [Service]
 Type=oneshot
-ExecStart=/usr/sbin/mail.sh
+ExecStart=/usr/sbin/mailnew.sh
 
 [Install]
 WantedBy=multi-user.target
