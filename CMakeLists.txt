@@ -15,7 +15,10 @@ add_definitions(-DBOOST_NO_RTTI)
 add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_ASIO_DISABLE_THREADS)
 
-set(SRC_FILES src/mainapp.cpp src/rikmail.cpp)
+set(SRC_FILES 
+    src/mainapp.cpp 
+    src/rikmail.cpp 
+)
 
 # import sdbusplus
 find_package(PkgConfig REQUIRED)
@@ -36,23 +39,27 @@ pkg_check_modules(LOGGING phosphor-logging REQUIRED)
 include_directories(${LOGGING_INCLUDE_DIRS})
 link_directories(${LOGGING_LIBRARY_DIRS})
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME} ${SRC_FILES})    
+
+target_link_libraries(${PROJECT_NAME} pthread)
 target_link_libraries(${PROJECT_NAME} ${SDBUSPLUSPLUS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${DBUSINTERFACE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} phosphor_logging)
 
-#set(SERVICE_FILES
-#    ${PROJECT_SOURCE_DIR}/rikmailsmtp.service
-#    )
+set(SERVICE_FILES
+    ${PROJECT_SOURCE_DIR}/rikmailsmtp.service
+    )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-#install(FILES ${PROJECT_SOURCE_DIR}/rikmail.conf DESTINATION /etc/rikmail COMPONENT config)
+install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
 install(FILES ${PROJECT_SOURCE_DIR}/mailnew.conf DESTINATION /etc/rikmail COMPONENT config)
 install(FILES ${PROJECT_SOURCE_DIR}/mailnew.count DESTINATION /etc/rikmail COMPONENT config)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.service DESTINATION /etc/systemd/system)
 install(FILES ${PROJECT_SOURCE_DIR}/rikmail.timer DESTINATION /etc/systemd/system)
-#install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail.sh DESTINATION /usr/sbin)
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/mailnew.sh DESTINATION /usr/sbin)
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/uptimer.sh DESTINATION /usr/sbin)
+
+
+
 

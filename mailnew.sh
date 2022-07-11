@@ -1,17 +1,17 @@
 #!/bin/bash
 
-#period=no
+#period=false
 #days=1
 #hours=1
 #minutes=6
-#volt=no
-#sens=no
-#host=no
-#logs=no
-#instant=no
-#errors=no
-#warnings=no
-#sending=no
+#volt=false
+#sens=false
+#host=false
+#logs=false
+#instant=false
+#errors=false
+#warnings=false
+#sending=false
 #inmail=xx@xx.xx
 #inpass=xx
 #smtp=xxx
@@ -43,9 +43,9 @@ elif [ $days != "0" ] && [ $hours == "0" ] && [ $minutes == "0" ]; then
 fi
 
 #counter=$(echo /etc/rikmail/mailnew.count)
-echo $counter
+#echo $counter
 counter=$((counter+1))
-echo before:$previnstant
+#echo before:$previnstant
 
 from="From: \"Rikor-Scalable EATX Board\" <$inmail>"
 to="To: \"Administrator\" <$outmail>"
@@ -53,7 +53,7 @@ dateparam=$(date)
 subjperiod="Subject: EATX Board Parameters at $dateparam: Periodic"
 subjinstant="Subject: !EATX Board Parameters at $dateparam: Criticals and Warnings"
 
-if [ $period == "yes" ] && [ $counter == $divider ]; then
+if [ $period == "true" ] && [ $counter == $divider ]; then
  echo $from > /etc/rikmail/period.txt
  echo $to >> /etc/rikmail/period.txt
  echo $subjperiod >> /etc/rikmail/period.txt
@@ -61,7 +61,7 @@ if [ $period == "yes" ] && [ $counter == $divider ]; then
  echo "Hi, $outmail." >> /etc/rikmail/period.txt
  echo "" >> /etc/rikmail/period.txt
  echo "periodic part:" >> /etc/rikmail/period.txt
- if [ $volt == "yes" ]; then
+ if [ $volt == "true" ]; then
   echo "" >> /etc/rikmail/period.txt
   echo "Voltages:" >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
@@ -86,7 +86,7 @@ if [ $period == "yes" ] && [ $counter == $divider ]; then
    fi
   done
  fi
- if [ $sens == "yes" ]; then
+ if [ $sens == "true" ]; then
   echo "" >> /etc/rikmail/period.txt
   echo "Sensors:" >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
@@ -110,7 +110,7 @@ if [ $period == "yes" ] && [ $counter == $divider ]; then
    fi
   done
  fi
- if [ $fans == "yes" ]; then
+ if [ $fans == "true" ]; then
   echo "" >> /etc/rikmail/period.txt
   echo "Fans:" >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
@@ -146,34 +146,34 @@ if [ $period == "yes" ] && [ $counter == $divider ]; then
    fi
   done
  fi
- if [ $host == "yes" ]; then
+ if [ $host == "true" ]; then
   echo "" >> /etc/rikmail/period.txt
   echo "Host Parameters:" >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
   echo "Todo" >> /etc/rikmail/period.txt
  fi
- if [ $logs == "yes" ]; then
+ if [ $logs == "true" ]; then
   echo "" >> /etc/rikmail/period.txt
   echo "Logs:" >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
   cat /var/log/redish.1 >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
  fi
- if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "yes" ]; then
+ if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ]; then
   /usr/sbin/sendmail -t < /etc/rikmail/period.txt
   sleep 10
-  echo "Periodic Mail sent"
+  #echo "Periodic Mail sent"
  fi
 fi
 
-if [ $instant == "yes" ]; then
+if [ $instant == "true" ]; then
  echo $from > /etc/rikmail/instant.txt
  echo $to >> /etc/rikmail/instant.txt
  echo $subjinstant >> /etc/rikmail/instant.txt
  echo "" >> /etc/rikmail/instant.txt
  echo "Hi, $outmail." >> /etc/rikmail/instant.txt
  echo "instant part:" >> /etc/rikmail/instant.txt
- if [ $errors == "yes" ]; then
+ if [ $errors == "true" ]; then
   echo "" >> /etc/rikmail/instant.txt
   echo "Criticals:" >> /etc/rikmail/instant.txt
   echo "" >> /etc/rikmail/instant.txt
@@ -196,7 +196,7 @@ if [ $instant == "yes" ]; then
    fi
   done
  fi
- if [ $warnings == "yes" ]; then
+ if [ $warnings == "true" ]; then
   echo "" >> /etc/rikmail/instant.txt
   echo "Warnings:" >> /etc/rikmail/instant.txt
   echo "" >> /etc/rikmail/instant.txt
@@ -220,19 +220,20 @@ if [ $instant == "yes" ]; then
   done
  fi
  if [ ${warnarr[1]} != "0" ] || [ ${errarr[1]} != "0" ]; then
-  if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "yes" ] && [ $previnstant == "no" ]; then
-   if [ $warnings == "yes" ] || [ $errors == "yes" ]; then
+  #if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] && [ $previnstant == "false" ]; then
+  if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] ; then
+   if [ $warnings == "true" ] || [ $errors == "true" ]; then
     /usr/sbin/sendmail -t < /etc/rikmail/instant.txt
     sleep 10
-    echo "Instant Mail sent"
+    #echo "Instant Mail sent"
    fi
   fi
-  previnstant=yes
+  previnstant=true
  else
-  previnstant=no
+  previnstant=false
  fi
 fi
-echo after:$previnstant
+#echo after:$previnstant
 
 if [ $counter == $divider ]; then
  counter="0"
@@ -242,10 +243,10 @@ echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
 
 
 
-if [ $outmail == "info@example.com" ]; then
- echo "not OK"
-fi
-if [ $outmail != "info@example.com" ] && [ $outmail != "" ]; then
- echo "OK"
-fi
+#if [ $outmail == "info@example.com" ]; then
+# echo "not OK"
+#fi
+#if [ $outmail != "info@example.com" ] && [ $outmail != "" ]; then
+# echo "OK"
+#fi
 

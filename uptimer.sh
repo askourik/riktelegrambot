@@ -2,7 +2,7 @@
 
 source /etc/rikmail/mailnew.conf
 
-correct=yes
+correct=true
 divider=0
 if [ $days == "0" ] && [ $hours == "0" ] && [ $minutes != "0" ]; then
   divider=$minutes/5
@@ -11,7 +11,7 @@ elif [ $days == "0" ] && [ $hours != "0" ] && [ $minutes == "0" ]; then
 elif [ $days != "0" ] && [ $hours == "0" ] && [ $minutes == "0" ]; then
   divider=$days*288
 else
-correct=no
+correct=false
 logger "incorrect timer format"
 fi
 oncal="*:0/5"
@@ -25,7 +25,8 @@ echo "UseTLS=YES" >> /etc/ssmtp/ssmtp.conf
 
 
 counter=0
-previnstant=no
+previnstant=false
+
 echo "counter=$counter" > /etc/rikmail/mailnew.count
 echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
 
