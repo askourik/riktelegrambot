@@ -20,6 +20,8 @@
 source /etc/rikmail/mailnew.conf
 source /etc/rikmail/mailnew.count
 
+logger "mailnew.sh"
+
 mapper="xyz.openbmc_project.ObjectMapper"
 allvolt="/xyz/openbmc_project/inventory/system/board/Rikor_Baseboard/all_sensors"
 allsens="/xyz/openbmc_project/inventory/system/board/Rikor_CPUs/all_sensors"
@@ -33,18 +35,9 @@ assoc="xyz.openbmc_project.Association endpoints"
 #done
 #echo ""
 
-divider=0
-if [ $days == "0" ] && [ $hours == "0" ] && [ $minutes != "0" ]; then
-  divider=$minutes/5
-elif [ $days == "0" ] && [ $hours != "0" ] && [ $minutes == "0" ]; then
-  divider=$hours*12
-elif [ $days != "0" ] && [ $hours == "0" ] && [ $minutes == "0" ]; then
-  divider=$days*288
-fi
-
 #counter=$(echo /etc/rikmail/mailnew.count)
-#echo $counter
-counter=$((counter+1))
+counter=$((counter-1))
+logger $counter
 #echo before:$previnstant
 
 from="From: \"Rikor-Scalable EATX Board\" <$inmail>"
@@ -53,7 +46,7 @@ dateparam=$(date)
 subjperiod="Subject: EATX Board Parameters at $dateparam: Periodic"
 subjinstant="Subject: !EATX Board Parameters at $dateparam: Criticals and Warnings"
 
-if [ $period == "true" ] && [ $counter == $divider ]; then
+if [ $period == "true" ] && [ $counter == "0" ]; then
  echo $from > /etc/rikmail/period.txt
  echo $to >> /etc/rikmail/period.txt
  echo $subjperiod >> /etc/rikmail/period.txt
@@ -162,7 +155,7 @@ if [ $period == "true" ] && [ $counter == $divider ]; then
  if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ]; then
   /usr/sbin/sendmail -t < /etc/rikmail/period.txt
   sleep 10
-  #echo "Periodic Mail sent"
+  logger "Periodic Mail sent"
  fi
 fi
 
@@ -177,49 +170,58 @@ if [ $instant == "true" ]; then
   echo "" >> /etc/rikmail/instant.txt
   echo "Criticals:" >> /etc/rikmail/instant.txt
   echo "" >> /etc/rikmail/instant.txt
-  errlist="busctl --system get-property $mapper $allerr $assoc"
-  errexec=$($errlist)
-  IFS=' ' read -a errarr <<< "$errexec"
-  echo "Number of errors: ${errarr[1]}" >> /etc/rikmail/instant.txt
-  for ((i = 2; i < ${#errarr[@]}; ++i));
-  do
-   IFS='/"' read -a errarr2 <<< "${errarr[$i]}"
-   #echo ${errarr[$i]} ${errarr2[5]} ${errarr2[6]}
-   if [ ${errarr2[5]} == "voltage" ]; then
-    errval="busctl --system introspect xyz.openbmc_project.ADCSensor /xyz/openbmc_project/sensors/voltage/${errarr2[6]}  xyz.openbmc_project.Sensor.Value"
-    errvalcur=$($errval | awk '/\.Value/ {print $4}')
-    echo ${errarr2[5]} ${errarr2[6]} $errvalcur >> /etc/rikmail/instant.txt
-  # elif [ ${errarr2[5]} == "cfm" ]; then
-  #  errval="busctl --system introspect xyz.openbmc_project.ExitAirTempSensor /xyz/openbmc_project/sensors/cfm/${errarr2[6]}  xyz.openbmc_project.Sensor.Value"
-  #  errvalcur=$($errval | awk '/\.Value/ {print $4}')
-  #  echo ${errarr2[5]} ${errarr2[6]} $errvalcur >> /etc/rikmail/instant.txt
-   fi
-  done
+  errexist="busctl tree $mapper | grep critical"
+  errexistval=$($errexist)
+  if [ $errexistval != "" ]; then
+   errlist="busctl --system get-property $mapper $allerr $assoc"
+   errexec=$($errlist)
+   IFS=' ' read -a errarr <<< "$errexec"
+   echo "Number of errors: ${errarr[1]}" >> /etc/rikmail/instant.txt
+   for ((i = 2; i < ${#errarr[@]}; ++i));
+   do
+    IFS='/"' read -a errarr2 <<< "${errarr[$i]}"
+    #echo ${errarr[$i]} ${errarr2[5]} ${errarr2[6]}
+    if [ ${errarr2[5]} == "voltage" ]; then
+     errval="busctl --system introspect xyz.openbmc_project.ADCSensor /xyz/openbmc_project/sensors/voltage/${errarr2[6]}  xyz.openbmc_project.Sensor.Value"
+     errvalcur=$($errval | awk '/\.Value/ {print $4}')
+     echo ${errarr2[5]} ${errarr2[6]} $errvalcur >> /etc/rikmail/instant.txt
+    #elif [ ${errarr2[5]} == "cfm" ]; then
+    # errval="busctl --system introspect xyz.openbmc_project.ExitAirTempSensor /xyz/openbmc_project/sensors/cfm/${errarr2[6]}  xyz.openbmc_project.Sensor.Value"
+    # errvalcur=$($errval | awk '/\.Value/ {print $4}')
+    # echo ${errarr2[5]} ${errarr2[6]} $errvalcur >> /etc/rikmail/instant.txt
+    fi
+   done
+  fi
  fi
  if [ $warnings == "true" ]; then
   echo "" >> /etc/rikmail/instant.txt
   echo "Warnings:" >> /etc/rikmail/instant.txt
   echo "" >> /etc/rikmail/instant.txt
-  warnlist="busctl --system get-property $mapper $allwarn $assoc"
-  warnexec=$($warnlist)
-  IFS=' ' read -a warnarr <<< "$warnexec"
-  echo "Number of warnings: ${warnarr[1]}" >> /etc/rikmail/instant.txt
-  for ((i = 2; i < ${#warnarr[@]}; ++i));
-  do
-   IFS='/"' read -a warnarr2 <<< "${warnarr[$i]}"
-   #echo ${warnarr[$i]} ${warnarr2[5]} ${warnarr2[6]}
-   if [ ${warnarr2[5]} == "voltage" ]; then
-    warnval="busctl --system introspect xyz.openbmc_project.ADCSensor /xyz/openbmc_project/sensors/voltage/${warnarr2[6]}  xyz.openbmc_project.Sensor.Value"
-    warnvalcur=$($warnval | awk '/\.Value/ {print $4}')
-    echo ${warnarr2[5]} ${warnarr2[6]} $warnvalcur >> /etc/rikmail/instant.txt
-  # elif [ ${warnarr2[5]} == "cfm" ]; then
-  #  warnval="busctl --system introspect xyz.openbmc_project.ExitAirTempSensor /xyz/openbmc_project/sensors/cfm/${warnarr2[6]}  xyz.openbmc_project.Sensor.Value"
-  #  warnvalcur=$($warnval | awk '/\.Value/ {print $4}')
-  #  echo ${warnarr2[5]} ${warnarr2[6]} $warnvalcur >> /etc/rikmail/instant.txt
-   fi
-  done
+  warnexist="busctl tree $mapper | grep warning"
+  warnexistval=$($warnexist)
+  if [ $warnexistval != "" ]; then
+   warnlist="busctl --system get-property $mapper $allwarn $assoc"
+   warnexec=$($warnlist)
+   IFS=' ' read -a warnarr <<< "$warnexec"
+   echo "Number of warnings: ${warnarr[1]}" >> /etc/rikmail/instant.txt
+   for ((i = 2; i < ${#warnarr[@]}; ++i));
+   do
+    IFS='/"' read -a warnarr2 <<< "${warnarr[$i]}"
+    #echo ${warnarr[$i]} ${warnarr2[5]} ${warnarr2[6]}
+    if [ ${warnarr2[5]} == "voltage" ]; then
+     warnval="busctl --system introspect xyz.openbmc_project.ADCSensor /xyz/openbmc_project/sensors/voltage/${warnarr2[6]}  xyz.openbmc_project.Sensor.Value"
+     warnvalcur=$($warnval | awk '/\.Value/ {print $4}')
+     echo ${warnarr2[5]} ${warnarr2[6]} $warnvalcur >> /etc/rikmail/instant.txt
+    #elif [ ${warnarr2[5]} == "cfm" ]; then
+    # warnval="busctl --system introspect xyz.openbmc_project.ExitAirTempSensor /xyz/openbmc_project/sensors/cfm/${warnarr2[6]}  xyz.openbmc_project.Sensor.Value"
+    # warnvalcur=$($warnval | awk '/\.Value/ {print $4}')
+    # echo ${warnarr2[5]} ${warnarr2[6]} $warnvalcur >> /etc/rikmail/instant.txt
+    fi
+   done
+  fi
  fi
- if [ ${warnarr[1]} != "0" ] || [ ${errarr[1]} != "0" ]; then
+ #if [ ${warnarr[1]} != "" ] || [ ${errarr[1]} != "" ]; then
+ if [ $warnexistval != "" ] || [ $errexistval != "" ]; then
   #if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] && [ $previnstant == "false" ]; then
   if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] ; then
    if [ $warnings == "true" ] || [ $errors == "true" ]; then
@@ -235,8 +237,19 @@ if [ $instant == "true" ]; then
 fi
 #echo after:$previnstant
 
-if [ $counter == $divider ]; then
- counter="0"
+if [ $counter == "0" ]; then
+  divider=0
+  if [ $minutes != "0" ]; then
+    divider+=$minutes/5
+  fi
+  if [ $hours != "0" ]; then
+    divider+=$hours*12
+  fi
+  if [ $days != "0" ]; then
+    divider+=$days*288
+  fi
+  logger $divider
+  counter=$divider
 fi
 echo "counter=$counter" > /etc/rikmail/mailnew.count
 echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
@@ -250,3 +263,4 @@ echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
 # echo "OK"
 #fi
 
+logger "mailnew.sh complete"

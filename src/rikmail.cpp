@@ -82,9 +82,19 @@ void RikmailMgr::writeConf(std::string m)
     std::ofstream conf_stream {conf_fname};
     conf_stream << m;
     conf_stream.close();
+    if (m[0] != '0')
+    {
+    system("/usr/sbin/mailnew.sh");
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+        "Rikmail writeConf executed mailnew.sh ");
     system("/usr/sbin/uptimer.sh");
     phosphor::logging::log<phosphor::logging::level::INFO>(
         "Rikmail writeConf executed uptimer.sh ");
-
+    }
+    else
+    {
+        phosphor::logging::log<phosphor::logging::level::INFO>(
+            "Rikmail writeConf mailconf=0 ");
+    }
 }
 
