@@ -50,7 +50,7 @@ void RikmailMgr::setMailMode(const std::string& mode)
     catch (const std::exception& e) 
     { 
          // std::cout << e.what();
-        this->mode = "0";
+        this->mode = initmode;
     }
     writeConf(this->mode);
     return;
@@ -59,7 +59,7 @@ void RikmailMgr::setMailMode(const std::string& mode)
 
 std::string RikmailMgr::readConf()
 {
-    std::string  m = "2";
+    std::string  m = initmode;
     fs::path conf_fname = "/etc/rikmail/mailnew.conf";
     try
     {
@@ -69,7 +69,7 @@ std::string RikmailMgr::readConf()
     }
     catch (const std::exception& e)
     {
-        m = "0";
+        m = initmode;
         writeConf(m);
     }
     return m;
@@ -82,19 +82,28 @@ void RikmailMgr::writeConf(std::string m)
     std::ofstream conf_stream {conf_fname};
     conf_stream << m;
     conf_stream.close();
-    if (m[0] != '0')
+    if (m != initmode)
     {
-    system("/usr/sbin/mailnew.sh");
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Rikmail writeConf executed mailnew.sh ");
-    system("/usr/sbin/uptimer.sh");
-    phosphor::logging::log<phosphor::logging::level::INFO>(
-        "Rikmail writeConf executed uptimer.sh ");
+    int ret_code = 0;
+    //ret_code = system("/usr/sbin/mailnew.sh");
+    //if (ret_code == 0)
+    //  phosphor::logging::log<phosphor::logging::level::INFO>(
+    //      "Rikmail writeConf executed mailnew.sh ");
+    //else
+    //  phosphor::logging::log<phosphor::logging::level::ERR>(
+    //      "Rikmail writeConf not executed mailnew.sh ");
+    ret_code = system("/usr/sbin/uptimer.sh");
+    if (ret_code == 0)
+      phosphor::logging::log<phosphor::logging::level::INFO>(
+          "Rikmail writeConf executed uptimer.sh ");
+    else
+      phosphor::logging::log<phosphor::logging::level::ERR>(
+          "Rikmail writeConf not executed uptimer.sh ");
     }
     else
     {
         phosphor::logging::log<phosphor::logging::level::INFO>(
-            "Rikmail writeConf mailconf=0 ");
+            "Rikmail writeConf mailconf=defaultmode ");
     }
 }
 

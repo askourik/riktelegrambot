@@ -12,6 +12,8 @@ static constexpr const char* RikmailIface =
 static constexpr const char* RikmailPath =
     "/xyz/openbmc_project/rikmail";
 
+static const std::string initmode = "enable=false\n";
+
 class RikmailMgr
 {
     boost::asio::io_service& io;
@@ -19,7 +21,7 @@ class RikmailMgr
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::shared_ptr<sdbusplus::asio::dbus_interface> iface;
 
-    std::string mode = "0";
+    std::string mode = initmode;
     void setMailMode(const std::string& mode);
     std::string readConf();
     void writeConf(std::string mode);

@@ -4,22 +4,25 @@ source /etc/rikmail/mailnew.conf
 
 logger "uptimer.sh"
 
+if [ $enable == "true" ]; then
+
 correct=true
+
 divider=0
 if [ $minutes != "0" ]; then
-  divider+=$minutes/5
+  divider=$((divider+minutes/5))
 fi
 if [ $hours != "0" ]; then
-  divider+=$hours*12
+  divider=$((divider+hours*12))
 fi
 if [ $days != "0" ]; then
-  divider+=$days*288
+  divider=$((divider+days*288))
 fi
 if [ $days == "0" ] && [ $hours == "0" ] && [ $minutes == "0" ]; then
-  correct=false
   logger "incorrect timer format"
 fi
-logger $divider
+logger "divider=$divider"
+
 oncal="*:0/5"
 
 echo "root=localhost" > /etc/ssmtp/ssmtp.conf
@@ -55,6 +58,12 @@ sleep 3
 
 systemctl daemon-reload
 systemctl restart rikmail.timer
+
+else
+
+logger "uptimer.sh not enabled"
+
+fi
 
 logger "uptimer.sh complete"
 

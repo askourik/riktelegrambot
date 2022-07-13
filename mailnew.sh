@@ -12,6 +12,7 @@
 #errors=false
 #warnings=false
 #sending=false
+#enable=false
 #inmail=xx@xx.xx
 #inpass=xx
 #smtp=xxx
@@ -21,6 +22,8 @@ source /etc/rikmail/mailnew.conf
 source /etc/rikmail/mailnew.count
 
 logger "mailnew.sh"
+
+if [ $enable == "true" ]; then
 
 mapper="xyz.openbmc_project.ObjectMapper"
 allvolt="/xyz/openbmc_project/inventory/system/board/Rikor_Baseboard/all_sensors"
@@ -35,10 +38,7 @@ assoc="xyz.openbmc_project.Association endpoints"
 #done
 #echo ""
 
-#counter=$(echo /etc/rikmail/mailnew.count)
-counter=$((counter-1))
-logger $counter
-#echo before:$previnstant
+#echo "before:$previnstant"
 
 from="From: \"Rikor-Scalable EATX Board\" <$inmail>"
 to="To: \"Administrator\" <$outmail>"
@@ -149,7 +149,7 @@ if [ $period == "true" ] && [ $counter == "0" ]; then
   echo "" >> /etc/rikmail/period.txt
   echo "Logs:" >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
-  cat /var/log/redish.1 >> /etc/rikmail/period.txt
+  cat /var/log/redfish >> /etc/rikmail/period.txt
   echo "" >> /etc/rikmail/period.txt
  fi
  if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ]; then
@@ -170,9 +170,9 @@ if [ $instant == "true" ]; then
   echo "" >> /etc/rikmail/instant.txt
   echo "Criticals:" >> /etc/rikmail/instant.txt
   echo "" >> /etc/rikmail/instant.txt
-  errexist="busctl tree $mapper | grep critical"
-  errexistval=$($errexist)
-  if [ $errexistval != "" ]; then
+  errexist="busctl tree $mapper"
+  errexistval=$($errexist | grep \-c $allerr)
+  if [ $errexistval != "0" ]; then
    errlist="busctl --system get-property $mapper $allerr $assoc"
    errexec=$($errlist)
    IFS=' ' read -a errarr <<< "$errexec"
@@ -197,9 +197,9 @@ if [ $instant == "true" ]; then
   echo "" >> /etc/rikmail/instant.txt
   echo "Warnings:" >> /etc/rikmail/instant.txt
   echo "" >> /etc/rikmail/instant.txt
-  warnexist="busctl tree $mapper | grep warning"
-  warnexistval=$($warnexist)
-  if [ $warnexistval != "" ]; then
+  warnexist="busctl tree $mapper"
+  warnexistval=$($warnexist | grep \-c $allwarn)
+  if [ $warnexistval != "0" ]; then
    warnlist="busctl --system get-property $mapper $allwarn $assoc"
    warnexec=$($warnlist)
    IFS=' ' read -a warnarr <<< "$warnexec"
@@ -221,7 +221,7 @@ if [ $instant == "true" ]; then
   fi
  fi
  #if [ ${warnarr[1]} != "" ] || [ ${errarr[1]} != "" ]; then
- if [ $warnexistval != "" ] || [ $errexistval != "" ]; then
+ if [ $warnexistval != "0" ] || [ $errexistval != "0" ]; then
   #if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] && [ $previnstant == "false" ]; then
   if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] ; then
    if [ $warnings == "true" ] || [ $errors == "true" ]; then
@@ -237,20 +237,26 @@ if [ $instant == "true" ]; then
 fi
 #echo after:$previnstant
 
+logger "counter=$counter"
 if [ $counter == "0" ]; then
   divider=0
   if [ $minutes != "0" ]; then
-    divider+=$minutes/5
+    divider=$((divider+minutes/5))
   fi
   if [ $hours != "0" ]; then
-    divider+=$hours*12
+    divider=$((divider+hours*12))
   fi
   if [ $days != "0" ]; then
-    divider+=$days*288
+    divider=$((divider+days*288))
   fi
-  logger $divider
+  if [ $days == "0" ] && [ $hours == "0" ] && [ $minutes == "0" ]; then
+    logger "incorrect timer format"
+  fi
+  logger "divider=$divider"
   counter=$divider
 fi
+counter=$((counter-1))
+logger "newcounter=$counter"
 echo "counter=$counter" > /etc/rikmail/mailnew.count
 echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
 
@@ -263,4 +269,10 @@ echo "previnstant=$previnstant" >> /etc/rikmail/mailnew.count
 # echo "OK"
 #fi
 
+else
+    logger "mailnew not enabled"
+fi
+
+
 logger "mailnew.sh complete"
+
