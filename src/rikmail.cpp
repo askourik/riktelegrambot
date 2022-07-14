@@ -59,12 +59,17 @@ void RikmailMgr::setMailMode(const std::string& mode)
 
 std::string RikmailMgr::readConf()
 {
-    std::string  m = initmode;
+    std::string  m = "";
     fs::path conf_fname = "/etc/rikmail/mailnew.conf";
     try
     {
         std::ifstream conf_stream {conf_fname};
-        conf_stream >> m;
+        std::string line;
+        while (getline(conf_stream, line))
+        {
+            m += line;
+            m += "\n";
+        }
         conf_stream.close();
     }
     catch (const std::exception& e)

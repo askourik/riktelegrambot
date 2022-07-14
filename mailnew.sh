@@ -38,7 +38,7 @@ assoc="xyz.openbmc_project.Association endpoints"
 #done
 #echo ""
 
-#echo "before:$previnstant"
+logger "instant before: $previnstant"
 
 from="From: \"Rikor-Scalable EATX Board\" <$inmail>"
 to="To: \"Administrator\" <$outmail>"
@@ -222,8 +222,8 @@ if [ $instant == "true" ]; then
  fi
  #if [ ${warnarr[1]} != "" ] || [ ${errarr[1]} != "" ]; then
  if [ $warnexistval != "0" ] || [ $errexistval != "0" ]; then
-  #if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] && [ $previnstant == "false" ]; then
-  if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] ; then
+  if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] && [ $previnstant == "false" ]; then
+  #if [ $outmail != "info@example.com" ] && [ $outmail != "" ] && [ $sending == "true" ] ; then
    if [ $warnings == "true" ] || [ $errors == "true" ]; then
     /usr/sbin/sendmail -t < /etc/rikmail/instant.txt
     sleep 10
@@ -235,7 +235,7 @@ if [ $instant == "true" ]; then
   previnstant=false
  fi
 fi
-#echo after:$previnstant
+logger "after instant: $previnstant"
 
 logger "counter=$counter"
 if [ $counter == "0" ]; then
