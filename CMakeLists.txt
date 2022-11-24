@@ -45,6 +45,7 @@ target_link_libraries(${PROJECT_NAME} phosphor_logging)
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.conf DESTINATION /etc/riktelegram COMPONENT config)
 install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.service DESTINATION /etc/systemd/system)
+install(FILES ${PROJECT_SOURCE_DIR}/riktelegrambot.service DESTINATION /etc/systemd/system)
 install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.timer DESTINATION /etc/systemd/system)
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/riktelegrambot.sh DESTINATION /usr/sbin)
 
