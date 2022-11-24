@@ -8,3 +8,14 @@ ExecStart=/usr/sbin/riktelegrambot.sh
 
 [Install]
 WantedBy=multi-user.target
+
+[Unit]
+Description=Rikor Telegram bot service
+
+[Service]
+KillMode=process
+Type=simple
+ExecStart=/usr/bin/riktelegram /etc/riktelegram/1001765034687/ 1
+
+[Install]
+WantedBy=multi-user.target
