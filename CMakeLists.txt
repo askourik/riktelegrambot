@@ -42,17 +42,8 @@ target_link_libraries(${PROJECT_NAME} ${DBUSINTERFACE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} phosphor_logging)
 
-set(SERVICE_FILES
-    ${PROJECT_SOURCE_DIR}/riktelegrambot.service
-    )
-
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-#install(FILES ${SERVICE_FILES} DESTINATION /lib/systemd/system/)
-install(FILES ${PROJECT_SOURCE_DIR}/rikmail.conf DESTINATION /etc/rikmail COMPONENT config)
-install(FILES ${PROJECT_SOURCE_DIR}/rikmail.service DESTINATION /etc/systemd/system)
-#install(FILES ${PROJECT_SOURCE_DIR}/rikmailsmtp.service DESTINATION /etc/systemd/system)
-install(FILES ${PROJECT_SOURCE_DIR}/rikmail.timer DESTINATION /etc/systemd/system)
-install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail.sh DESTINATION /usr/sbin)
-install(PROGRAMS ${PROJECT_SOURCE_DIR}/mail2.sh DESTINATION /usr/sbin)
-install(PROGRAMS ${PROJECT_SOURCE_DIR}/uptimer.sh DESTINATION /usr/sbin)
-
+install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.conf DESTINATION /etc/riktelegram COMPONENT config)
+install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.service DESTINATION /etc/systemd/system)
+install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.timer DESTINATION /etc/systemd/system)
+install(PROGRAMS ${PROJECT_SOURCE_DIR}/riktelegrambot.sh DESTINATION /usr/sbin)
