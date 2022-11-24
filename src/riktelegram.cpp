@@ -26,7 +26,7 @@ RiktelegramMgr::RiktelegramMgr(boost::asio::io_service& io_,
         });
     iface->register_method(
         "WriteMode", [this](const std::string& mode) {
-            setMailMode(mode);
+            setTelegramMode(mode);
         });
     iface->initialize(true);
 
