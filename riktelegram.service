@@ -1,10 +1,10 @@
 [Unit]
 Description=Logs system statistics to the systemd journal
-Wants=rikmail.timer
+Wants=riktelegram.timer
 
 [Service]
 Type=oneshot
-ExecStart=/usr/sbin/mail.sh
+ExecStart=/usr/sbin/riktelegrambot.sh
 
 [Install]
 WantedBy=multi-user.target
