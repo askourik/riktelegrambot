@@ -3,16 +3,16 @@
 #include <boost/asio/io_service.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 
-static constexpr const char* RikmailServiceName =
+static constexpr const char* RiktelegramServiceName =
     "xyz.openbmc_project.rikmail";
-static constexpr const char* RikmailIface =
+static constexpr const char* RiktelegramIface =
     "xyz.openbmc_project.Rikmail";
-static constexpr const char* RikmailPath =
+static constexpr const char* RiktelegramPath =
     "/xyz/openbmc_project/rikmail";
 
-class RikmailMgr
+class RiktelegramMgr
 {
-    enum class RikmailMode
+    enum class RiktelegramMode
     {
         AUTO = 0,
         MINIMAL = 1,
@@ -27,14 +27,12 @@ class RikmailMgr
 
     std::string mode = "2_2_info@example.com";
 
-    std::unordered_map<std::string, std::string> readAllVariable();
-    void setMailMode(const std::string& mode);
+    void setTelegramMode(const std::string& mode);
     std::string readConf();
     void writeConf(const std::string &m);
-    //void rikmail_set_timer(const std::string &time_str);
 
   public:
-    RikmailMgr(boost::asio::io_service& io,
+    RiktelegramMgr(boost::asio::io_service& io,
                 sdbusplus::asio::object_server& srv,
                 std::shared_ptr<sdbusplus::asio::connection>& conn);
 };
