@@ -26,12 +26,9 @@ namespace fs = std::filesystem;
 // using json = nlohmann::json;
 using namespace std::chrono_literals;
 
+#define CONFIG_FILE_NAME "/etc/riktelegram/riktelegram.conf"
 
-#define CONFIG_FILE_NAME "/etc/rikmail/rikmail.conf"
-#define MailFmt  "/usr/sbin/sendmail -t < /etc/rikmail/mail.txt"
-
-
-void logMail(char *cstr)
+void logTelegram(char *cstr)
 {
         syslog(LOG_INFO, "Processing string %s",  cstr);
 }
