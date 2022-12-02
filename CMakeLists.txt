@@ -36,11 +36,16 @@ pkg_check_modules(LOGGING phosphor-logging REQUIRED)
 include_directories(${LOGGING_INCLUDE_DIRS})
 link_directories(${LOGGING_LIBRARY_DIRS})
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CURLPP REQUIRED curlpp)
+
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${SDBUSPLUSPLUS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${DBUSINTERFACE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} phosphor_logging)
+target_link_libraries(${PROJECT_NAME} ${CURLPP_LDFLAGS})
+
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 #install(FILES ${PROJECT_SOURCE_DIR}/riktelegram.conf DESTINATION /etc/riktelegram COMPONENT config)
