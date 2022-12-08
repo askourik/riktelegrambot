@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	      << "Example 11: Usage: telegrambot msgfile" 
 	      << std::endl;
     return EXIT_FAILURE;
-  }*/
+  }
   
   char url[] = "https://api.telegram.org/bot5812037533:AAHYmDkoIbtYGBSFW7_-qmHu2hKtBV7YHlQ/sendMessage";//argv[1];
   char *msgfile = argv[1];
