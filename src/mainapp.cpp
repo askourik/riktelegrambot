@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstdio>
 #include <cerrno>
 
 #include <curlpp/cURLpp.hpp>
