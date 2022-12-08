@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   fseek(f,0,SEEK_END);
   long fsize = ftell(f);
   fseek(f,0,SEEK_SET);
-  char *msg = malloc(fsize+29);
+  char *msg = (char *)malloc(fsize+29);
   strcpy(msg,"chat_id=-1001765034687&text=");
   fread(msg+28,fsize,1,f);
   msg[fsize+28]=0;
