@@ -1,20 +1,3 @@
-/*
-#include "riktelegram.hpp"
-#include <phosphor-logging/log.hpp>
-
-int main()
-{
-    boost::asio::io_service io;
-    auto conn = std::make_shared<sdbusplus::asio::connection>(io);
-    conn->request_name(RiktelegramServiceName);
-    sdbusplus::asio::object_server server(conn);
-
-
-    RiktelegramMgr riktelegramMgr(io, server, conn);
-
-    io.run();
-}
-*/
 #include <cstdlib>
 #include <cerrno>
 
@@ -25,15 +8,25 @@ int main()
 
 int main(int argc, char *argv[])
 {
-  /*if(argc < 2) {
+  if(argc < 2) {
     std::cerr << "Example 11: Wrong number of arguments" << std::endl 
-	      << "Example 11: Usage: example12 url" 
+	      << "Example 11: Usage: telegrambot msgfile" 
 	      << std::endl;
     return EXIT_FAILURE;
   }*/
   
   char url[] = "https://api.telegram.org/bot5812037533:AAHYmDkoIbtYGBSFW7_-qmHu2hKtBV7YHlQ/sendMessage";//argv[1];
-  
+  char *msgfile = argv[1];
+  FILE *f = fopen(msgfile,"rb");
+  fseek(f,0,SEEK_END);
+  long fsize = ftell(f);
+  fseek(f,0,SEEK_SET);
+  char *msg = malloc(fsize+29);
+  strcpy(msg,"chat_id=-1001765034687&text=");
+  fread(msg+28,fsize,1,f);
+  msg[fsize+28]=0;
+  fclose(f);
+	
   try {
     curlpp::Cleanup cleaner;
     curlpp::Easy request;
@@ -58,5 +51,6 @@ int main(int argc, char *argv[])
     std::cout << e.what() << std::endl;
   }
 
+  free(msg);
   return EXIT_SUCCESS;
 }
