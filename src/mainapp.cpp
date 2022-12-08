@@ -36,13 +36,8 @@ int main(int argc, char *argv[])
     request.setOpt(new curlpp::options::Url(url)); 
     request.setOpt(new curlpp::options::Verbose(true)); 
     
-    //std::list<std::string> header; 
-    //header.push_back("Content-Type: application/octet-stream"); 
-    
-    //request.setOpt(new curlpp::options::HttpHeader(header)); 
-    
-    request.setOpt(new curlpp::options::PostFields("chat_id=-1001765034687&text=Hello!Rikor!world"));
-    request.setOpt(new curlpp::options::PostFieldSize(46));
+    request.setOpt(new curlpp::options::PostFields(msg));
+    request.setOpt(new curlpp::options::PostFieldSize(fsize+29));
     
     request.perform(); 
   }
