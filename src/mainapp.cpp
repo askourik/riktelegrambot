@@ -25,14 +25,14 @@ int main()
 
 int main(int argc, char *argv[])
 {
-  if(argc < 2) {
+  /*if(argc < 2) {
     std::cerr << "Example 11: Wrong number of arguments" << std::endl 
 	      << "Example 11: Usage: example12 url" 
 	      << std::endl;
     return EXIT_FAILURE;
-  }
+  }*/
   
-  char *url = argv[1];
+  char url[] = "https://api.telegram.org/bot5812037533:AAHYmDkoIbtYGBSFW7_-qmHu2hKtBV7YHlQ/sendMessage";//argv[1];
   
   try {
     curlpp::Cleanup cleaner;
@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
     
     //request.setOpt(new curlpp::options::HttpHeader(header)); 
     
-    request.setOpt(new curlpp::options::PostFields("abcd"));
-    request.setOpt(new curlpp::options::PostFieldSize(5));
+    request.setOpt(new curlpp::options::PostFields("chat_id=-1001765034687&text=Hello!Rikor!world"));
+    request.setOpt(new curlpp::options::PostFieldSize(46));
     
     request.perform(); 
   }
