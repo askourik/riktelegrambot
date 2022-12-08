@@ -41,10 +41,10 @@ int main(int argc, char *argv[])
     request.setOpt(new curlpp::options::Url(url)); 
     request.setOpt(new curlpp::options::Verbose(true)); 
     
-    std::list<std::string> header; 
-    header.push_back("Content-Type: application/octet-stream"); 
+    //std::list<std::string> header; 
+    //header.push_back("Content-Type: application/octet-stream"); 
     
-    request.setOpt(new curlpp::options::HttpHeader(header)); 
+    //request.setOpt(new curlpp::options::HttpHeader(header)); 
     
     request.setOpt(new curlpp::options::PostFields("abcd"));
     request.setOpt(new curlpp::options::PostFieldSize(5));
