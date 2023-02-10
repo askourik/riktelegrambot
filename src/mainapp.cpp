@@ -37,9 +37,17 @@ int main(int argc, char *argv[])
 		  std::list<std::string> header; 
 		  header.push_back("Content-Type: application/json"); 
 		  header.push_back("Accept-Encoding: gzip, deflate"); 
-		  std::stringstream auths;
-		  auths << "Authorization: Bearer " << argv[3];
-		  header.push_back(auths.str()); 
+		  if (argc == 3)
+		  {
+			  header.push_back("Authorization: Bearer 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"); 
+		  }
+		  else
+		  {
+			  std::stringstream auths;
+			  auths << "Authorization: Bearer " << argv[3];
+			  std::string authdata = auths.str();
+			  header.push_back(authdata); 
+		  }
 		  header.push_back("User-Agent: AI%20CHAT/2 CFNetwork/1333.0.4 Darwin/21.5.0"); 
 		  header.push_back("Accept-Language: en-EN,en;q=0.9"); 
 		  request.setOpt(new curlpp::options::HttpHeader(header)); 
