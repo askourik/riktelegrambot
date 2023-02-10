@@ -23,10 +23,11 @@ int main(int argc, char *argv[])
   if (!strcmp(argv[1], "chatgpt"))
   {
 	std::stringstream urls;
-        urls << "\'{\"model\": \"text-davinci-003\",  \"max_tokens\": 3500, \"prompt\":" << "\"" << argv[2] << "\"}\'";
+        urls << "{\"model\": \"text-davinci-003\",  \"max_tokens\": 3500, \"prompt\":" << "\"" << argv[2] << "\"}";
 	std::string url = "https://api.openai.com/v1/completions";
 	std::string urldata = urls.str();
 	std::cout << std::endl << " URL: " << url << std::endl;
+	std::cout << std::endl << " URLDATA: " << urldata << std::endl;
 	  try {
 		  curlpp::Cleanup cleaner;
 		  curlpp::Easy request;
