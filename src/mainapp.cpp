@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   if (!strcmp(argv[1], "chatgpt"))
   {
 	std::stringstream urls;
-        urls << "https://api.openai.com/v1/completions -H \'Content-Type: application/json\' -H \'Accept-Encoding: gzip, deflate\' -H \'Authorization: Bearer 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\' -H \'User-Agent: AI%20CHAT/2 CFNetwork/1333.0.4 Darwin/21.5.0\' -H \'Accept-Language: en-EN,en;q=0.9\' -d \'{\"model\": \"text-davinci-003\",  \"max_tokens\": 3500, \"prompt\":" << argv[2] << "}\'";
+        urls << "https://api.openai.com/v1/completions -H \'Content-Type: application/json\' -H \'Accept-Encoding: gzip, deflate\' -H \'Authorization: Bearer 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\' -H \'User-Agent: AI%20CHAT/2 CFNetwork/1333.0.4 Darwin/21.5.0\' -H \'Accept-Language: en-EN,en;q=0.9\' -d \'{\"model\": \"text-davinci-003\",  \"max_tokens\": 3500, \"prompt\":" << "\"" << argv[2] << "\"}\'";
 	std::string url = urls.str();
 	std::cout << std::endl << " URL: " << url << std::endl;
 	  try {
