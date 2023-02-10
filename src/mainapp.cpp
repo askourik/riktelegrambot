@@ -7,6 +7,7 @@
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Exception.hpp>
+#include <curlpp/Infos.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
         strcat(url,argv[2]);	  
 	strcat(url,"}\'");
         char *msg = (char *)malloc(4000);
-	print("%s\n",url);
+	printf("%s\n",url);
 	  try {
 		curlpp::Cleanup cleaner;
 		curlpp::Easy request;
