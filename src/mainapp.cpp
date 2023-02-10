@@ -60,7 +60,6 @@ int main(int argc, char *argv[])
 	  catch ( curlpp::RuntimeError & e ) {
 	    std::cout << e.what() << std::endl;
 	  }
-        free(msg);
 	return EXIT_SUCCESS;
   }
   
