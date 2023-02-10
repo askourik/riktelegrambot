@@ -16,6 +16,50 @@ int main(int argc, char *argv[])
 	      << std::endl;
     return EXIT_FAILURE;
   }
+  if (!strcmp(argv[1], "chatgpt"))
+  {
+	char url[] = "https://api.openai.com/v1/completions -H \'Content-Type: application/json\' -H \'Accept-Encoding: gzip, deflate\' -H \'Authorization: Bearer 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\' -H \'User-Agent: AI%20CHAT/2 CFNetwork/1333.0.4 Darwin/21.5.0\' -H \'Accept-Language: en-EN,en;q=0.9\' -d \'{\"model\": \"text-davinci-003\",  \"max_tokens\": 3500, \"prompt\":";
+        strcat(url,argv[2]);	  
+	strcat(url,"}\'");
+        char *msg = (char *)malloc(4000);
+	print("%s\n",url);
+	  try {
+		curlpp::Cleanup cleaner;
+		curlpp::Easy request;
+
+		using namespace curlpp::Options;
+		request.setOpt(Verbose(true));
+		request.setOpt(Url(url));
+
+		request.perform();
+
+		std::string effURL;
+		curlpp::infos::EffectiveUrl::get(request, effURL);
+		std::cout << "Effective URL: " << effURL << std::endl;
+
+		//other way to retreive URL
+		std::cout << std::endl 
+			<< "Effective URL: " 
+			<< curlpp::infos::EffectiveUrl::get(request)
+			<< std::endl;
+
+		std::cout << "Response code: " 
+			<< curlpp::infos::ResponseCode::get(request) 
+			<< std::endl;
+
+		std::cout << "SSL engines: " 
+			<< curlpp::infos::SslEngines::get(request)
+			<< std::endl;
+	  }
+	  catch ( curlpp::LogicError & e ) {
+	    std::cout << e.what() << std::endl;
+	  }
+	  catch ( curlpp::RuntimeError & e ) {
+	    std::cout << e.what() << std::endl;
+	  }
+        free(msg);
+	return EXIT_SUCCESS;
+  }
   
   char url[] = "https://api.telegram.org/bot5812037533:AAHYmDkoIbtYGBSFW7_-qmHu2hKtBV7YHlQ/sendMessage";
   char *chat_id = argv[1];
