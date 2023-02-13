@@ -44,29 +44,13 @@ int main(int argc, char *argv[])
 		  header.push_back(authdata); 
 		  header.push_back("User-Agent: AI%20CHAT/2 CFNetwork/1333.0.4 Darwin/21.5.0"); 
 		  header.push_back("Accept-Language: en-EN,en;q=0.9"); 
+		  header.push_back("Connection: close");
 		  request.setOpt(new curlpp::options::HttpHeader(header)); 
 		  request.setOpt(new curlpp::options::PostFields(urldata));
 		  request.setOpt(new curlpp::options::PostFieldSize(urldata.size()));
 		  
 		  request.perform();
 
-		std::string effURL;
-		curlpp::infos::EffectiveUrl::get(request, effURL);
-		std::cout << "Effective URL: " << effURL << std::endl;
-
-		//other way to retreive URL
-		std::cout << std::endl 
-			<< "Effective URL: " 
-			<< curlpp::infos::EffectiveUrl::get(request)
-			<< std::endl;
-
-		std::cout << "Response code: " 
-			<< curlpp::infos::ResponseCode::get(request) 
-			<< std::endl;
-
-		std::cout << "SSL engines: " 
-			<< curlpp::infos::SslEngines::get(request)
-			<< std::endl;
 	  }
 	  catch ( curlpp::LogicError & e ) {
 	    std::cout << e.what() << std::endl;
